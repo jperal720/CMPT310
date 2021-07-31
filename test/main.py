@@ -1,16 +1,28 @@
-# This is a sample Python script.
+import csv
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+from sklearn.model_selection import train_test_split
+import pandas as pd
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+studentMath = pd.read_csv('student-mat.csv', ';')
+print(studentMath.shape)
+print(studentMath.isna().sum())
 
+###
+# Ignore 4, 11, 20 and keeps the other 30 rows
+#
+studentMath = studentMath.loc[:, ['school', 'sex', 'age', 'famsize', 'Pstatus', 'Medu', 'Fedu',
+       'Mjob', 'Fjob', 'guardian', 'traveltime', 'studytime',
+       'failures', 'schoolsup', 'famsup', 'paid', 'activities',
+       'higher', 'internet', 'romantic', 'famrel', 'freetime', 'goout', 'Dalc',
+       'Walc', 'health', 'absences', 'G1', 'G2', 'G3'] ]
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+print(studentMath.shape)
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# with open ('student-mat.csv', 'r') as csvFile:
+#     csvReader = csv.reader(csvFile)
+#
+#     for row in csvReader:
+#         studentMath.append(row)
+#
+#     print(studentMath)
