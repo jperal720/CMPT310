@@ -11,14 +11,12 @@ from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 import pandas as pd
 
-studentMath = pd.read_csv('student-mat.csv', ';')
-# print(studentMath.shape)
-# print(studentMath.isna().sum())
-
 ###
 # LINEAR REGRESSION MODEL
+# Data Partition
 # Ignore 1, 2, 4, 5, 11, 12, 20, 23, G1, G2 and keeps the other rows
-#
+
+studentMath = pd.read_csv('student-mat.csv', ';')
 studentMath = studentMath.loc[:, ['school', 'age', 'Pstatus', 'Medu', 'Fedu',
        'Mjob', 'Fjob', 'traveltime', 'studytime',
        'failures', 'schoolsup', 'famsup', 'paid', 'activities',
@@ -32,11 +30,6 @@ x = studentMath.loc[:, ['age', 'Medu', 'Fedu',
        'Walc', 'health', 'absences']]
 
 y = studentMath.G3
-# x = studentMath.loc[:, ['studytime']]
-
-# print(x.shape)
-# print(x.head)
-# print(y.shape)
 
 #ONE HOT ENCODER
 ohe = OneHotEncoder(sparse=False)
@@ -46,9 +39,6 @@ ohe = OneHotEncoder(sparse=False)
 columnTrans = make_column_transformer((OneHotEncoder(),
                                       ['Mjob', 'Fjob', 'schoolsup', 'famsup', 'paid', 'activities',
                                        'higher', 'internet']), remainder='passthrough')
-# print("columnTransform: ", columnTrans.fit_transform(x))
-# xNew = columnTrans.fit_transform(x)
-# print("DEBUG:", xNew)
 
 #Creating Linear Regression Model
 linReg = LinearRegression()
@@ -69,6 +59,5 @@ xSample = columnTrans.fit_transform(xSample)
 print(xSample)
 yPred.sort(axis=0)
 plt.plot(yPred, 'o', color='black')
-# plt.xticks(())
-# plt.yticks(())
+
 plt.show()
