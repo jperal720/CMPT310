@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 import pandas as pd
 
 ###
-### Neural Network Models
+# LINEAR REGRESSION MODEL
 # Data Partition
 # Ignore 1, 2, 4, 5, 11, 12, 20, 23, G1, G2 and keeps the other rows
 
@@ -31,7 +31,7 @@ x = studentMath.loc[:, ['age', 'Medu', 'Fedu',
 
 y = studentMath.G3
 
-### ONE HOT ENCODER
+#ONE HOT ENCODER
 ohe = OneHotEncoder(sparse=False)
 # print(ohe.fit_transform(x[['Pstatus']]))
 # print(ohe.categories_)
@@ -40,12 +40,12 @@ columnTrans = make_column_transformer((OneHotEncoder(),
                                       ['Mjob', 'Fjob', 'schoolsup', 'famsup', 'paid', 'activities',
                                        'higher', 'internet']), remainder='passthrough')
 
-### Creating MLP classifier Model
+#Creating MLP classifier Model
 clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random_state=1)
 pipeLine = make_pipeline(columnTrans, clf)
 print("CVS:", cross_val_score(pipeLine, x, y, cv=3).mean())
 
-### Prediction
+#Prediction
 xSample = x.sample(50)
 pipeLine.fit(x, y)
 yPred = pipeLine.predict(xSample)
@@ -54,7 +54,7 @@ print(pipeLine.score(x, y))
 print("this is the new shape X", xSample)
 print("this is the new shape", yPred)
 
-### Graph
+#Graph
 xSample = columnTrans.fit_transform(xSample)
 print(xSample)
 yPred.sort(axis=0)
