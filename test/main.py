@@ -35,7 +35,7 @@ y = studentMath.G3
 # x = studentMath.loc[:, ['studytime']]
 
 # print(x.shape)
-print(x.head)
+# print(x.head)
 # print(y.shape)
 
 #ONE HOT ENCODER
@@ -46,27 +46,27 @@ ohe = OneHotEncoder(sparse=False)
 columnTrans = make_column_transformer((OneHotEncoder(),
                                       ['Mjob', 'Fjob', 'schoolsup', 'famsup', 'paid', 'activities',
                                        'higher', 'internet']), remainder='passthrough')
-print("columnTransform: ", columnTrans.fit_transform(x))
+# print("columnTransform: ", columnTrans.fit_transform(x))
+# xNew = columnTrans.fit_transform(x)
+# print("DEBUG:", xNew)
 
 #Creating Linear Regression Model
 linReg = LinearRegression()
 pipeLine = make_pipeline(columnTrans, linReg)
-print(cross_val_score(pipeLine, x, y, cv=3).mean())
+print("CVS:" cross_val_score(pipeLine, x, y, cv=3).mean())
+
+xSample = x.sample(50)
+pipeLine.fit(x, y)
+yPred = pipeLine.predict(xSample)
+print(yPred)
+print(pipeLine.score(x, y))
+print("this is the new shape X", xSample)
+print("this is the new shape", yPred)
 
 
-# print("CVS:", cross_val_score(linReg, x, y, cv=3).mean())
-# print(y.value_counts(normalize=True))
-#
-# yPred = linReg.predict(x)
-#
-# print('Coefficients: \n', linReg.coef_)
-# print('Mean squared error: %.2f' % mean_squared_error(y, yPred))
-# print('Coefficient of determination: %.2f' % r2_score(y, yPred))
-#
-#
-# plt.scatter(x, y, edgecolors='red')
-# plt.plot(x, yPred, 'o', color='black')
+xSample = columnTrans.fit_transform(xSample)
+print(xSample)
+plt.plot(yPred, 'o', color='black')
 # plt.xticks(())
 # plt.yticks(())
-#
-# plt.show()
+plt.show()
