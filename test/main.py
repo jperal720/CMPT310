@@ -53,8 +53,9 @@ columnTrans = make_column_transformer((OneHotEncoder(),
 #Creating Linear Regression Model
 linReg = LinearRegression()
 pipeLine = make_pipeline(columnTrans, linReg)
-print("CVS:" cross_val_score(pipeLine, x, y, cv=3).mean())
+print("CVS:", cross_val_score(pipeLine, x, y, cv=3).mean())
 
+#Prediction
 xSample = x.sample(50)
 pipeLine.fit(x, y)
 yPred = pipeLine.predict(xSample)
@@ -63,9 +64,10 @@ print(pipeLine.score(x, y))
 print("this is the new shape X", xSample)
 print("this is the new shape", yPred)
 
-
+#Graph
 xSample = columnTrans.fit_transform(xSample)
 print(xSample)
+yPred.sort(axis=0)
 plt.plot(yPred, 'o', color='black')
 # plt.xticks(())
 # plt.yticks(())
