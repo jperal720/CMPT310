@@ -45,8 +45,10 @@ clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(15,), random
 pipeLine = make_pipeline(columnTrans, clf)
 print("CVS:", cross_val_score(pipeLine, x, y, cv=3).mean())
 
-#Prediction
-xSample = x.sample(50)
+### Prediction
+
+xSample = x.head(50) #grabs the first 50 rows of x
+ySample = y.head(50).to_numpy() #grabs the first 50 rows of y
 pipeLine.fit(x, y)
 yPred = pipeLine.predict(xSample)
 print(yPred)
@@ -54,10 +56,11 @@ print(pipeLine.score(x, y))
 print("this is the new shape X", xSample)
 print("this is the new shape", yPred)
 
-#Graph
-xSample = columnTrans.fit_transform(xSample)
-print(xSample)
+### Graph
+# xSample = columnTrans.fit_transform(xSample)
+# print(xSample)
 yPred.sort(axis=0)
 plt.plot(yPred, 'o', color='black')
+plt.plot(ySample, 'o', color='red')
 
 plt.show()
