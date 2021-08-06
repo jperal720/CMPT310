@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from matplotlib import pyplot
 from sklearn.datasets import make_regression
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+
 
 # ###SECTION 1
 # # Create synthetic regression dataset with 1,000 examples
@@ -30,21 +32,33 @@ from sklearn.metrics import mean_squared_error
 #
 # plt.show()
 
-###SECTION 2
+# ###SECTION 2
+#
+# y_true = [3, -0.5, 2, 7]
+# y_pred = [2.5, 0.0, 2, 8]
+#
+# print(mean_squared_error(y_true, y_pred))
+#
+# y_true = [3, -0.5, 2, 7]
+# y_pred = [2.5, 0.0, 2, 8]
+#
+# print(mean_squared_error(y_true, y_pred, squared=False))
+#
+# y_true = [[0.5, 1],[-1, 1],[7, -6]]
+# y_pred = [[0, 2],[-1, 2],[8, -5]]
+#
+# print(mean_squared_error(y_true, y_pred))
+#
+# print(mean_squared_error(y_true, y_pred, squared=False))
+
+###Section 3
 
 y_true = [3, -0.5, 2, 7]
 y_pred = [2.5, 0.0, 2, 8]
 
-print(mean_squared_error(y_true, y_pred))
+print(mean_absolute_error(y_true, y_pred))
 
-y_true = [3, -0.5, 2, 7]
-y_pred = [2.5, 0.0, 2, 8]
+y_true = [[0.5, 1], [-1, 1], [7, -6]]
+y_pred = [[0, 2], [-1, 2], [8, -5]]
 
-print(mean_squared_error(y_true, y_pred, squared=False))
-
-y_true = [[0.5, 1],[-1, 1],[7, -6]]
-y_pred = [[0, 2],[-1, 2],[8, -5]]
-
-print(mean_squared_error(y_true, y_pred))
-
-print(mean_squared_error(y_true, y_pred, squared=False))
+print(mean_absolute_error(y_true, y_pred))
