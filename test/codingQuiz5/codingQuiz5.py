@@ -21,5 +21,3 @@ training_data = pd.DataFrame(X_train, columns=['a', 'b', 'c', 'd', 'e'])
 training_data.insert(0, "Y", y_train)
 
 sns.pairplot(training_data, kind='reg', diag_kind='kde')
-
-plt.show()
