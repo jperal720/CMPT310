@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 import pandas as pd
 
 ###
-# LINEAR REGRESSION MODEL
+# MultiLayerPerceptron
 # Data Partition
 # Ignore 1, 2, 4, 5, 11, 12, 20, 23, G1, G2 and keeps the other rows
 
