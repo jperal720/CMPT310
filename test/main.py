@@ -10,106 +10,60 @@ import random
 import os
 import cv2
 import SimpleITK as sitk
+import pandas
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn import tree
+from sklearn.ensemble import VotingClassifier
+from sklearn.ensemble import RandomForestClassifier
 from os import listdir
 from numpy import asarray
 from numpy import save
+from numpy import load
 from tensorflow import keras
 from tensorflow.keras import layers
+from sklearn.model_selection import cross_val_score
 
-dataDir = "S:/Documents/CMPT310/test/PetImages"
-categories = ["Dog", "Cat"]
-
-trainingData = []
 imgSize = 200
+images = load('S:/Documents/CMPT310/test/dogs_vs_cats_images.npy', allow_pickle=True)
+labels = load('S:/Documents/CMPT310/test/dogs_vs_cats_labels.npy', allow_pickle=True)
 
-(train_ds, test_ds), metadata = tfds.load(
-    'cats_vs_dogs',
-    split=['train[:80%]', 'train[80%:]'],
-    shuffle_files=True,
-    with_info=True,
-    as_supervised=True,
-)
+X = []
+y = []
 
-num_classes = metadata.features['label'].num_classes
-print(num_classes)
+for image in images:
+    X.append(image)
 
-get_label_name = metadata.features['label'].int2str
+for label in labels:
+    y.append(label)
 
-image, label = next(iter(train_ds))
-_ = plt.imshow(image)
-_ = plt.title(get_label_name(label))
+# print(X.shape)
+X = np.array(X).reshape(-1, imgSize, imgSize, 3)
+y = np.array(y).reshape(-1)
+X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-def resize_and_rescale(image, label):
-    image = tf.cast(image, tf.float32)
-    iamge = tf.image.resize(image, [imgSize, imgSize])
-    image = (image / 255.0)
-    return image, label
+#SVM Classifier
 
-def augment(image_label, seed):
-    image, label = image_label
-    image, label = resize_and_rescale(image, label)
-    image = tf.image.resize_with_crop_or_pad(image, imgSize + 6, imgSize + 6)
+clf = svm.SVC()
 
-    new_seed = tf.random.experimental.stateless_split(seed, num=1)[0, :]
+# print(images.shape, labels.shape)
+num_samples = y_train.shape[0]
+num_samples_X = y.shape[0]
+X_train = np.reshape(X_train, (num_samples, -1))
+X = np.reshape(X, (num_samples_X, -1))
+print(y.shape)
 
-    image = tf.image.stateless_random_crop(image, size=[imgSize, imgSize, 3], seed=seed)
-
-    image = tf.image.stateless_random_brightness(image, max_delta=0.5, seed=new_seed)
-
-    image = tf.clip_by_value(image, 0, 1)
-
-    return image, label
-
-AUTOTUNE = tf.data.experimental.AUTOTUNE
-BATCH_SIZE = 64
-
-train_ds = train_ds.map(resize_and_rescale, num_parallel_calls=AUTOTUNE)
-train_ds = train_ds.cache()
-train_ds = train_ds.shuffle(metadata.splits["train[:80%]"].num_examples)
-train_ds = train_ds.batch(BATCH_SIZE)
-train_ds = train_ds.prefetch(AUTOTUNE)
-
-test_ds = test_ds.map(resize_and_rescale, num_parallel_calls=AUTOTUNE)
-test_ds = test_ds.batch(128)
-test_ds = test_ds.prefetch(AUTOTUNE)
+print(X_train.shape, y_train.shape)
+print(X.shape, y.shape)
+# clf.fit(X_train, y_train)
 
 
-model = keras.Sequential([
-    keras.Input((28, 28, 3)),
-    layers.Conv2D(32, 3, activation='relu'),
-    layers.Flatten(),
-    layers.Dense(10)
-])
-
-model.compile(
-    optimizer=keras.optimizers.Adam(lr=0.001),
-    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    metrics=["accuracy"],
-)
-
-# model.fit(train_dataset, epochs=5, verbose=2)
-# model.evaluate(train_dataset)
+# #Prediction
 #
-# print(metadata)
+y_prediction = clf.predict(clf, X_test)
+# print(y_prediction)
+print(clf.score(X_train, y_train))
 
-
-# for image in train_dataset:
-#     for index in image:
-#         print(index)
-#     break
-#     # print(image)
-#     sArr = sitk.GetArrayViewFromImage(image)
-#     plt.imshow(sArr)
-# location of downloaded Dogs vs. Cats image dataset on my computer
-# folder = '/Volumes/WDBook/dogs-vs-cats/train/'
-
-# subset of original dataset consisting of 1,000 images
-folder = 'C:\\Users\\terupuki\\tensorflow_datasets\\cats_vs_dogs\\4.0.0'
-
-# subset of original dataset consisting of 10,000 images
-# folder = '/Volumes/WDBook/dogs-vs-cats/train-10000/'
-
-# resized_photo = load_img("/path/to/original_image_file", target_size=(200, 200))
